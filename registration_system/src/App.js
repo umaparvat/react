@@ -19,7 +19,7 @@ function CheckBoxes(props){
     
       props.checkvalues.map((item, index)=> {
         return (<div key={item}>
-          <input key={index} type='checkbox' name={props.cnames[index]} onChange={props.change} />
+          <input key={index} type='checkbox' name={props.cnames[index]} onChange={props.change} checked={props.cnum[index]}/>
           <span>{item}</span>
         </div>)
       })
@@ -49,7 +49,7 @@ class App extends React.Component{
   constructor(props){
     super(props)
     this.state = {checkvalues: ['Dietary Restrictions', 'Physical Disabilities', 'Medical Needs'], 
-                  ccheck: [0,0,0],
+                  ccheck: [],
                   checkNames: ['dietary', 'physical', 'medical'],
                   table_values: []}
     this.handleEvent = this.handleEvent.bind(this)
@@ -57,24 +57,28 @@ class App extends React.Component{
   handleClick(){
     console.log("called cick")
     var tempval = this.state.table_values.slice();
+    var tempnum = this.state.ccheck.slice();
     var restrictions = []
     if (this.state.dietary === "on"){
       restrictions.push(this.state.checkvalues[0])
+      tempnum[0] = !tempnum[0]
     }
     if (this.state.physical === "on"){
       restrictions.push(this.state.checkvalues[1])
+      tempnum[1] = !tempnum[1]
     }
     if (this.state.medical === "on"){
       restrictions.push(this.state.checkvalues[2])
+      tempnum[2] = !tempnum[2]
     }
     tempval.push({firstName: this.state.firstName, 
                   lastName: this.state.lastName, 
                   activity: this.state.activity, 
                   restrictions: restrictions.join()})
-    this.setState({table_values: tempval, ccheck:[0,0,0], 
+    this.setState({table_values: tempval, ccheck:tempnum, 
                    dietary: "off", 
                    physical: "off", 
-                   medical: "off"})
+                   medical: "off", firstName: "", lastName: "", activity: ""})
     
 
 
@@ -108,7 +112,7 @@ class App extends React.Component{
           Select Activity
           <SelectOption name="activity" change={this.handleEvent}/><br/>
           Check all that apply
-          <CheckBoxes cnames={this.state.checkNames} checkvalues={this.state.checkvalues} change={this.handleEvent}/><br/>
+          <CheckBoxes cnames={this.state.checkNames} cnum={this.state.ccheck} checkvalues={this.state.checkvalues} change={this.handleEvent}/><br/>
           <button onClick={this.handleClick.bind(this)}>Submit</button>
         </div>
         <div show={this.state.table_values.length}>
